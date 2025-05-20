@@ -1,0 +1,144 @@
+{% extends 'base.html' %}
+
+{% block title %}Recording Details{% endblock %}
+
+{% block content %}
+<div class="dashboard-container">
+    <div class="recording-detail-page">
+        <div class="back-link mb-4">
+            <a href="{{ url_for('main.history') }}" class="btn btn-outline-secondary">
+                <i class="fas fa-arrow-left"></i> Back to History
+            </a>
+        </div>
+        
+        <div class="card">
+            <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                <h2 class="mb-0 fw-bold">
+                    <i class="fas fa-file-audio me-2"></i>
+                    {{ recording.display_name or recording.filename or 'Untitled Recording' }}
+                </h2>                
+                <span class="recording-date">{{ recording.timestamp.strftime('%Y-%m-%d %H:%M') }}</span>
+            </div>
+            <div class="card-body">
+                <div class="row mb-4">
+                    <div class="col-md-6">
+                        <h4>Recording Details</h4>
+                        <ul class="list-group">
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                Duration
+                                <span>{{ recording.duration|default('N/A', true) }} seconds</span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                File Size
+                                <span>{{ recording.file_size|default('N/A', true) }} bytes</span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                Created
+                                <span>{{ recording.timestamp.strftime('%Y-%m-%d %H:%M:%S') }}</span>
+                            </li>
+                        </ul>
+                    </div>
+                    
+                    <div class="col-md-6">
+                        <h4>Audio File</h4>
+                        {% if recording.filename %}
+                            <div class="audio-player-container">
+                                <audio controls class="w-100">
+                                    <source src="{{ url_for('transcribe.uploaded_file', filename=recording.filename) }}" type="audio/mpeg">
+                                    Your browser does not support the audio element.
+                                </audio>
+                            </div>
+                        {% else %}
+                            <div class="alert alert-warning">
+                                Audio file not available
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <div class="transcription-container mt-4">
+                    <h3>Transcription</h3>
+                    {% if recording.text %}
+                        <div class="card">
+                            <div class="card-header d-flex justify-content-between align-items-center">
+                                <span>Transcription Result</span>
+                                <button class="btn btn-sm btn-outline-primary" 
+                                        onclick="copyToClipboard('transcription-text')">
+                                    <i class="fas fa-copy"></i> Copy
+                                </button>
+                            </div>
+                            <div class="card-body">
+                                <div id="transcription-text" class="transcription-text">
+                                    {{ recording.text }}
+                                </div>
+                            </div>
+                        </div>
+                    {% else %}
+                        <div class="alert alert-info">
+                            <i class="fas fa-info-circle me-2"></i>
+                            No transcription available for this recording.
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <div class="card-footer">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <a href="{{ url_for('main.history') }}" class="btn btn-secondary">
+                            <i class="fas fa-list"></i> Back to List
+                        </a>
+                    </div>
+                    {% if recording.text %}
+                    <div>
+                        <button class="btn btn-primary" onclick="copyToClipboard('transcription-text')">
+                            <i class="fas fa-copy"></i> Copy Transcription
+                        </button>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    function copyToClipboard(elementId) {
+        const element = document.getElementById(elementId);
+        if (!element) {
+            console.error('Element not found:', elementId);
+            return;
+        }
+        
+        const text = element.textContent;
+        if (!text || text === 'No transcription available') {
+            console.error('No valid text to copy');
+            return;
+        }
+        
+        navigator.clipboard.writeText(text)
+            .then(() => {
+                // Show success message
+                const copyMessage = document.createElement('div');
+                copyMessage.className = 'copy-message';
+                copyMessage.textContent = 'Copied to clipboard!';
+                document.body.appendChild(copyMessage);
+
+                setTimeout(() => {
+                    copyMessage.classList.add('show');
+                    setTimeout(() => {
+                        copyMessage.classList.remove('show');
+                        setTimeout(() => {
+                            document.body.removeChild(copyMessage);
+                        }, 300);
+                    }, 1500);
+                }, 10);
+            })
+            .catch(err => {
+                console.error('Failed to copy text: ', err);
+            });
+    }
+</script>
+{% endblock %}

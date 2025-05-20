@@ -1,0 +1,352 @@
+{% extends 'base.html' %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+<div class="dashboard-container">
+    <div class="dashboard-page animate__animated animate__fadeIn">
+        <h1 class="mb-4 text-primary fw-bold">
+            <i class="fas fa-tachometer-alt me-2"></i>Your Dashboard
+        </h1>
+        
+        <div class="row">
+            <div class="col-md-4">
+                <!-- Profile Card - Improved alignment and styling -->
+                <div class="card shadow-lg border-0 rounded-lg mb-4 profile-card">
+                    <div class="card-header bg-gradient-primary text-white">
+                        <h2 class="mb-0 fw-bold d-flex align-items-center">
+                            <i class="fas fa-user-circle me-2"></i>
+                            <span class="text-truncate">{{ user.username }}</span>
+                        </h2>
+                    </div>
+                    <div class="card-body">
+                        <div class="text-center mb-4">
+                            <div class="avatar-container mx-auto">
+                                <img src="https://www.gravatar.com/avatar/{{ user.email|lower|trim|md5 }}?s=150&d=identicon" 
+                                     class="rounded-circle img-thumbnail shadow" alt="Profile Picture">
+                                <div class="avatar-badge">
+                                    <i class="fas fa-user-check"></i>
+                                </div>
+                            </div>
+                            <h4 class="mt-3 mb-0 fw-bold">{{ user.username }}</h4>
+                            <p class="text-muted">{{ user.email }}</p>
+                        </div>
+                        
+                        <div class="user-info-container">
+                            <div class="user-info-item">
+                                <div class="info-label">
+                                    <i class="fas fa-envelope me-2 text-primary"></i>
+                                    <span>Email</span>
+                                </div>
+                                <div class="info-value text-break">{{ user.email }}</div>
+                            </div>
+                            
+                            <div class="user-info-item">
+                                <div class="info-label">
+                                    <i class="fas fa-calendar-plus me-2 text-primary"></i>
+                                    <span>Member Since</span>
+                                </div>
+                                <div class="info-value">{{ user.created_at.strftime('%B %d, %Y') }}</div>
+                            </div>
+                            
+                            <div class="user-info-item">
+                                <div class="info-label">
+                                    <i class="fas fa-clock me-2 text-primary"></i>
+                                    <span>Last Login</span>
+                                </div>
+                                <div class="info-value">{{ user.last_login.strftime('%B %d, %Y at %H:%M') if user.last_login else 'N/A' }}</div>
+                            </div>
+                            
+                            <div class="user-info-item">
+                                <div class="info-label">
+                                    <i class="fas fa-microphone me-2 text-primary"></i>
+                                    <span>Recordings</span>
+                                </div>
+                                <div class="info-value">
+                                    <span class="badge bg-primary rounded-pill px-3 py-2">{{ recordings|length }}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card shadow-lg border-0 rounded-lg">
+                    <div class="card-header bg-gradient-primary text-white">
+                        <h2 class="mb-0 fw-bold">
+                            <i class="fas fa-bolt me-2"></i>
+                            Quick Actions
+                        </h2>
+                    </div>
+                    <div class="card-body">
+                        <div class="d-grid gap-3">
+                            <a href="{{ url_for('transcribe.index') }}" class="btn btn-primary btn-lg hover-scale">
+                                <i class="fas fa-microphone me-2"></i> New Transcription
+                            </a>
+                            <a href="{{ url_for('main.history') }}" class="btn btn-outline-primary btn-lg hover-scale">
+                                <i class="fas fa-history me-2"></i> View History
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Rest of the dashboard content remains the same -->
+            <div class="col-md-8">
+                <div class="card shadow-lg border-0 rounded-lg mb-4">
+                    <div class="card-header bg-gradient-primary text-white">
+                        <h2 class="mb-0 fw-bold">
+                            <i class="fas fa-history me-2"></i>
+                            Recent Transcriptions
+                        </h2>
+                    </div>
+                    <div class="card-body">
+                        {% if recordings %}
+                            <div class="list-group">
+                                {% for recording in recordings %}
+                                <a href="{{ url_for('main.view_recording', recording_id=recording.id) }}" 
+                                   class="list-group-item list-group-item-action animate__animated animate__fadeIn" 
+                                   style="animation-delay: {{ loop.index0 * 0.1 }}s">
+                                    <div class="d-flex w-100 justify-content-between">
+                                        <h5 class="mb-1">{{ recording.display_name or recording.filename or 'Untitled Recording' }}</h5>
+                                        <small>{{ recording.timestamp.strftime('%b %d, %H:%M') }}</small>
+                                    </div>
+                                    <p class="mb-1 text-truncate">{{ recording.text|default('No transcription available', true) }}</p>
+                                    <small>
+                                        <i class="fas fa-clock me-1"></i> {{ recording.duration|default('N/A', true) }} seconds
+                                        <i class="fas fa-file-audio ms-2 me-1"></i> {{ recording.file_size|default('N/A', true) }} bytes
+                                    </small>
+                                </a>
+                                {% endfor %}
+                            </div>
+                            
+                            {% if recordings|length >= 5 %}
+                            <div class="d-grid mt-3">
+                                <a href="{{ url_for('main.history') }}" class="btn btn-outline-primary hover-scale">
+                                    <i class="fas fa-list me-2"></i> View All Transcriptions
+                                </a>
+                            </div>
+                            {% endif %}
+                        {% else %}
+                            <div class="text-center py-5">
+                                <i class="fas fa-microphone-slash fa-4x text-muted mb-3"></i>
+                                <h3>No transcriptions yet</h3>
+                                <p>Upload an audio file to get started with your first transcription.</p>
+                                <a href="{{ url_for('transcribe.index') }}" class="btn btn-primary mt-2 hover-scale">
+                                    <i class="fas fa-plus me-2"></i> Create First Transcription
+                                </a>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <div class="card shadow-lg border-0 rounded-lg">
+                    <div class="card-header bg-gradient-primary text-white">
+                        <h2 class="mb-0 fw-bold">
+                            <i class="fas fa-lightbulb me-2"></i>
+                            Tips & Tricks
+                        </h2>
+                    </div>
+                    <div class="card-body">
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <div class="card bg-light h-100 hover-card">
+                                    <div class="card-body">
+                                        <h5 class="card-title"><i class="fas fa-file-audio me-2 text-primary"></i>Audio Quality</h5>
+                                        <p class="card-text">Higher quality audio files result in more accurate transcriptions. Try to reduce background noise.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="card bg-light h-100 hover-card">
+                                    <div class="card-body">
+                                        <h5 class="card-title"><i class="fas fa-language me-2 text-primary"></i>Clear Speech</h5>
+                                        <p class="card-text">Speak clearly and at a moderate pace for best transcription results.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="card bg-light h-100 hover-card">
+                                    <div class="card-body">
+                                        <h5 class="card-title"><i class="fas fa-hdd me-2 text-primary"></i>File Size</h5>
+                                        <p class="card-text">Files under 10MB work best. For longer recordings, consider splitting into smaller segments.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="card bg-light h-100 hover-card">
+                                    <div class="card-body">
+                                        <h5 class="card-title"><i class="fas fa-clock me-2 text-primary"></i>Processing Time</h5>
+                                        <p class="card-text">Longer files take more time to process. Be patient during transcription.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block head %}
+{{ super() }}
+<style>
+    .dashboard-container {
+        padding: 1.5rem;
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+    
+    .card {
+        transition: all 0.3s ease;
+        border-radius: 10px;
+        overflow: hidden;
+        margin-bottom: 1.5rem;
+    }
+    
+    .bg-gradient-primary {
+        background: linear-gradient(135deg, #4e73df 0%, #224abe 100%);
+    }
+    
+    .dashboard-page {
+        margin-bottom: 2rem;
+    }
+    
+    /* Profile card styling */
+    .profile-card {
+        overflow: visible;
+    }
+    
+    .avatar-container {
+        position: relative;
+        width: 150px;
+        height: 150px;
+    }
+    
+    .avatar-container img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        border: 4px solid white;
+    }
+    
+    .avatar-badge {
+        position: absolute;
+        bottom: 0;
+        right: 0;
+        background-color: var(--success-color);
+        color: white;
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: 2px solid white;
+    }
+    
+    .user-info-container {
+        background-color: #f8f9fc;
+        border-radius: 10px;
+        padding: 1rem;
+    }
+    
+    .user-info-item {
+        display: flex;
+        flex-direction: column;
+        margin-bottom: 1rem;
+        padding-bottom: 1rem;
+        border-bottom: 1px solid rgba(0,0,0,0.05);
+    }
+    
+    .user-info-item:last-child {
+        margin-bottom: 0;
+        padding-bottom: 0;
+        border-bottom: none;
+    }
+    
+    .info-label {
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        margin-bottom: 0.5rem;
+        color: #5a5c69;
+    }
+    
+    .info-value {
+        padding-left: 1.8rem;
+        word-break: break-word;
+    }
+    
+    /* Other styles */
+    .hover-scale {
+        transition: all 0.3s ease;
+    }
+    
+    .hover-scale:hover {
+        transform: scale(1.05);
+    }
+    
+    .hover-card {
+        transition: all 0.3s ease;
+    }
+    
+    .hover-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0,0,0,0.1) !important;
+    }
+    
+    .list-group-item {
+        transition: all 0.3s ease;
+        border-left: 3px solid transparent;
+    }
+    
+    .list-group-item:hover {
+        transform: translateX(5px);
+        border-left: 3px solid var(--primary-color);
+    }
+    
+    .list-group-item-action {
+        transition: all 0.2s ease;
+    }
+    
+    .list-group-item-action:hover {
+        background-color: #f8f9fc;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+    }
+    
+    @media (max-width: 768px) {
+        .card-header {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+        
+        .info-label, .info-value {
+            width: 100%;
+        }
+        
+        .info-value {
+            padding-left: 0;
+            margin-top: 0.25rem;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Add animation to the cards
+        const animateElements = document.querySelectorAll('.card, .list-group-item');
+        let delay = 0;
+        
+        animateElements.forEach(element => {
+            setTimeout(() => {
+                element.classList.add('animate__animated', 'animate__fadeInUp');
+            }, delay);
+            delay += 100;
+        });
+    });
+</script>
+{% endblock %}

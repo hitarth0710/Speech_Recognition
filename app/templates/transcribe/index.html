@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+
+{% block title %}Transcribe Audio{% endblock %}
+
+{% block content %}
+<h1>Transcribe Your Audio File</h1>
+<p class="lead">Upload an audio file to get a text transcription using OpenAI's Whisper model.</p>
+
+<div class="card mt-4">
+    <div class="card-body">
+        <h5 class="card-title">Upload Audio File</h5>
+        <form action="{{ url_for('transcribe.upload_file') }}" method="post" enctype="multipart/form-data">
+            <div class="mb-3">
+                <label for="file" class="form-label">Select audio file</label>
+                <input class="form-control" type="file" id="file" name="file" accept=".wav,.mp3,.flac,.ogg,.m4a">
+                <div class="form-text">Supported formats: WAV, MP3, FLAC, OGG, M4A (max 16MB)</div>
+            </div>
+            <button type="submit" class="btn btn-primary">Transcribe</button>
+        </form>
+    </div>
+</div>
+
+<div class="card mt-4">
+    <div class="card-body">
+        <h5 class="card-title">Supported Audio Formats</h5>
+        <ul>
+            <li><strong>WAV</strong> - Waveform Audio File Format</li>
+            <li><strong>MP3</strong> - MPEG Audio Layer III</li>
+            <li><strong>FLAC</strong> - Free Lossless Audio Codec</li>
+            <li><strong>OGG</strong> - Ogg Vorbis Audio Format</li>
+            <li><strong>M4A</strong> - MPEG-4 Audio File</li>
+        </ul>
+    </div>
+</div>
+
+<div class="alert alert-info mt-4">
+    <h5>Processing Time</h5>
+    <p>Transcription typically takes 10-60 seconds depending on the length of your audio file and server load.</p>
+    <p>Please be patient after uploading your file while we process it. Do not refresh the page.</p>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const fileInput = document.getElementById('file');
+    const submitButton = document.querySelector('button[type="submit"]');
+    
+    fileInput.addEventListener('change', function() {
+        if (this.files.length > 0) {
+            // Check file size
+            if (this.files[0].size > 16 * 1024 * 1024) {
+                alert('File size exceeds the 16MB limit. Please choose a smaller file.');
+                this.value = '';
+            }
+        }
+    });
+    
+    document.querySelector('form').addEventListener('submit', function() {
+        if (fileInput.files.length > 0) {
+            submitButton.disabled = true;
+            submitButton.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Processing...';
+        }
+    });
+});
+</script>
+{% endblock %}

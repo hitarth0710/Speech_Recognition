@@ -1,0 +1,14 @@
+Flask==2.3.3
+transformers==4.36.2
+datasets==2.14.6
+torch==2.1.0
+torchaudio==2.1.0
+python-dotenv==1.0.0
+Werkzeug==2.3.7
+flask-wtf==1.2.1
+pytz==2023.3
+pydub==0.25.1
+librosa==0.10.1
+flask-sqlalchemy==3.0.5
+flask-login==0.6.2
+SpeechRecognition==3.10.0

@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+
+{% block title %}Transcription Result{% endblock %}
+
+{% block content %}
+<h1>Transcription Result</h1>
+
+<div class="card mt-4">
+    <div class="card-header">
+        <h5>Audio File Details</h5>
+    </div>
+    <div class="card-body">
+        <p><strong>Original Filename:</strong> {{ recording.original_filename }}</p>
+        {% if recording.created_at %}
+        <p><strong>Uploaded:</strong> {{ recording.created_at.strftime('%Y-%m-%d %H:%M:%S') }}</p>
+        {% endif %}
+        
+        <div class="mt-3">
+            <h6>Audio Player</h6>
+            <audio controls class="w-100">
+                <source src="{{ url_for('transcribe.uploaded_file', filename=recording.filename) }}" type="audio/mpeg">
+                Your browser does not support the audio element.
+            </audio>
+        </div>
+    </div>
+</div>
+
+<div class="card mt-4">
+    <div class="card-header">
+        <h5>Transcription</h5>
+    </div>
+    <div class="card-body">
+        <div class="p-3 bg-light rounded">
+            <p class="transcription-text">{{ recording.transcription }}</p>
+        </div>
+        
+        <div class="d-flex justify-content-end mt-3">
+            <button class="btn btn-outline-secondary me-2" id="copy-btn">
+                <i class="fas fa-clipboard"></i> Copy Text
+            </button>
+            <a href="{{ url_for('transcribe.index') }}" class="btn btn-primary">
+                Transcribe Another File
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const copyBtn = document.getElementById('copy-btn');
+    const transcriptionText = document.querySelector('.transcription-text').textContent;
+    
+    copyBtn.addEventListener('click', function() {
+        navigator.clipboard.writeText(transcriptionText).then(function() {
+            copyBtn.innerHTML = '<i class="fas fa-clipboard-check"></i> Copied!';
+            setTimeout(function() {
+                copyBtn.innerHTML = '<i class="fas fa-clipboard"></i> Copy Text';
+            }, 2000);
+        });
+    });
+});
+</script>
+{% endblock %}

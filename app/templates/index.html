@@ -1,0 +1,462 @@
+{% extends 'base.html' %}
+
+{% block title %}Home{% endblock %}
+
+{% block content %}
+{% if current_user.is_authenticated %}
+<!-- LOGGED IN USER VIEW -->
+<div class="container py-5">
+    <!-- Welcome Hero Section -->
+    <div class="row mb-5">
+        <div class="col-12">
+            <div class="card border-0 bg-gradient-blue-purple text-white rounded-4 shadow-lg">
+                <div class="card-body p-5">
+                    <div class="row align-items-center">
+                        <div class="col-md-8">
+                            <h1 class="display-4 fw-bold mb-3 animate__animated animate__fadeInUp">Welcome back, {{ current_user.username }}!</h1>
+                            <p class="lead mb-4 animate__animated animate__fadeInUp animate__delay-1s">Ready to convert your speech to text? Our AI is waiting to transcribe your audio files with industry-leading accuracy.</p>
+                            <div class="d-flex gap-3 animate__animated animate__fadeInUp animate__delay-2s">
+                                <a href="{{ url_for('transcribe.index') }}" class="btn btn-light btn-lg px-4 py-3 fw-semibold shadow-sm">
+                                    <i class="fas fa-microphone me-2"></i> New Transcription
+                                </a>
+                                <a href="{{ url_for('main.dashboard') }}" class="btn btn-outline-light btn-lg px-4 py-3">
+                                    <i class="fas fa-tachometer-alt me-2"></i> Go to Dashboard
+                                </a>
+                            </div>
+                        </div>
+                        <div class="col-md-4 d-none d-md-block text-center">
+                            <img src="{{ url_for('static', filename='images/waveform.svg') }}" alt="Audio Waveform" class="img-fluid pulse-animation" style="max-height: 200px;">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- AI Model Information -->
+    <div class="row mb-5">
+        <div class="col-12">
+            <div class="card border-0 shadow-sm hover-lift rounded-4 bg-gradient-tech text-white">
+                <div class="card-body p-4">
+                    <div class="row align-items-center">
+                        <div class="col-md-7">
+                            <div class="p-3">
+                                <div class="feature-badge bg-white text-primary px-3 py-1 rounded-pill d-inline-block mb-3">
+                                    <i class="fas fa-robot me-1"></i> AI Technology
+                                </div>
+                                <h2 class="fw-bold mb-3">Wav2Vec 2.0 Technology</h2>
+                                <p class="lead">Our application uses Facebook's Wav2Vec 2.0 Large model, a state-of-the-art speech recognition system with self-supervised learning.</p>
+                                <ul class="list-unstyled mb-4">
+                                    <li class="mb-2"><i class="fas fa-check-circle me-2"></i> 960 hours of pre-training on unlabeled speech</li>
+                                    <li class="mb-2"><i class="fas fa-check-circle me-2"></i> Over 300 million parameters for high accuracy</li>
+                                    <li><i class="fas fa-check-circle me-2"></i> Fine-tuned on labeled data for optimal performance</li>
+                                </ul>
+                                <a href="https://ai.facebook.com/blog/wav2vec-20-learning-the-structure-of-speech-from-raw-audio/" target="_blank" class="btn btn-light btn-lg">
+                                    <i class="fas fa-external-link-alt me-2"></i> Learn About Wav2Vec
+                                </a>
+                            </div>
+                        </div>
+                        <div class="col-md-5 d-none d-md-block">
+                            <div class="text-center">
+                                <img src="{{ url_for('static', filename='images/ai-model.svg') }}" alt="AI Model Architecture" class="img-fluid" style="max-height: 280px;">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Amazing Facts About Speech Recognition -->
+    <div class="row mb-5">
+        <div class="col-12">
+            <div class="card border-0 shadow-sm hover-lift rounded-4">
+                <div class="card-header bg-white border-0 py-3">
+                    <h5 class="mb-0 fw-bold">
+                        <i class="fas fa-lightbulb text-warning me-2"></i> Amazing Facts About Speech Recognition
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="row g-4">
+                        <div class="col-md-6">
+                            <div class="fact-card p-4 bg-light rounded-4 h-100">
+                                <div class="d-flex">
+                                    <div class="fact-icon me-3 text-primary">
+                                        <i class="fas fa-history fa-2x"></i>
+                                    </div>
+                                    <div>
+                                        <h5 class="fw-bold">Historical Milestone</h5>
+                                        <p class="mb-0">The first speech recognition system, "Audrey," was developed by Bell Laboratories in 1952 and could only recognize digits spoken by one person.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="fact-card p-4 bg-light rounded-4 h-100">
+                                <div class="d-flex">
+                                    <div class="fact-icon me-3 text-success">
+                                        <i class="fas fa-brain fa-2x"></i>
+                                    </div>
+                                    <div>
+                                        <h5 class="fw-bold">Neural Revolution</h5>
+                                        <p class="mb-0">Modern speech recognition error rates dropped from 26% to under 4% in just five years after the introduction of deep neural networks in 2012.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="fact-card p-4 bg-light rounded-4 h-100">
+                                <div class="d-flex">
+                                    <div class="fact-icon me-3 text-info">
+                                        <i class="fas fa-globe fa-2x"></i>
+                                    </div>
+                                    <div>
+                                        <h5 class="fw-bold">Language Support</h5>
+                                        <p class="mb-0">Today's speech recognition systems can recognize over 125 languages and dialects, with some models approaching human-level accuracy in certain contexts.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="fact-card p-4 bg-light rounded-4 h-100">
+                                <div class="d-flex">
+                                    <div class="fact-icon me-3 text-danger">
+                                        <i class="fas fa-microchip fa-2x"></i>
+                                    </div>
+                                    <div>
+                                        <h5 class="fw-bold">Computing Power</h5>
+                                        <p class="mb-0">Training a state-of-the-art speech recognition model can require over 50,000 GPU hours, equivalent to running a single GPU continuously for nearly 6 years.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Key Features Section -->
+    <div class="row g-4">
+        <div class="col-12">
+            <div class="card border-0 shadow-sm hover-lift rounded-4">
+                <div class="card-header bg-white border-0 py-3">
+                    <h5 class="mb-0 fw-bold">
+                        <i class="fas fa-star text-warning me-2"></i> Key Features of VoiceScribe
+                    </h5>
+                </div>
+                <div class="card-body pb-2">
+                    <div class="row g-4">
+                        <div class="col-md-4">
+                            <div class="feature-card border rounded-4 h-100 hover-lift">
+                                <div class="feature-card-body p-4">
+                                    <div class="feature-icon-container mb-3">
+                                        <div class="feature-icon bg-primary-soft rounded-circle p-3 d-inline-flex">
+                                            <i class="fas fa-file-audio text-primary fa-2x"></i>
+                                        </div>
+                                    </div>
+                                    <h4 class="fw-bold">Multi-Format Support</h4>
+                                    <p>Our system supports MP3, WAV, M4A, and FLAC audio files, allowing for flexibility in your recording options.</p>
+                                    <div class="mt-3">
+                                        <span class="badge bg-primary-soft text-primary px-3 py-2 rounded-pill">MP3</span>
+                                        <span class="badge bg-primary-soft text-primary px-3 py-2 rounded-pill">WAV</span>
+                                        <span class="badge bg-primary-soft text-primary px-3 py-2 rounded-pill">M4A</span>
+                                        <span class="badge bg-primary-soft text-primary px-3 py-2 rounded-pill">FLAC</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="feature-card border rounded-4 h-100 hover-lift">
+                                <div class="feature-card-body p-4">
+                                    <div class="feature-icon-container mb-3">
+                                        <div class="feature-icon bg-success-soft rounded-circle p-3 d-inline-flex">
+                                            <i class="fas fa-cogs text-success fa-2x"></i>
+                                        </div>
+                                    </div>
+                                    <h4 class="fw-bold">Built with PyTorch</h4>
+                                    <p>Our application is built on the powerful PyTorch framework, leveraging GPU acceleration for faster processing when available.</p>
+                                    <div class="mt-3">
+                                        <span class="badge bg-success-soft text-success px-3 py-2 rounded-pill">GPU Acceleration</span>
+                                        <span class="badge bg-success-soft text-success px-3 py-2 rounded-pill">PyTorch</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="feature-card border rounded-4 h-100 hover-lift">
+                                <div class="feature-card-body p-4">
+                                    <div class="feature-icon-container mb-3">
+                                        <div class="feature-icon bg-danger-soft rounded-circle p-3 d-inline-flex">
+                                            <i class="fas fa-lock text-danger fa-2x"></i>
+                                        </div>
+                                    </div>
+                                    <h4 class="fw-bold">Private Processing</h4>
+                                    <p>All audio processing occurs on our secure servers, ensuring your sensitive audio data never leaves our protected environment.</p>
+                                    <div class="mt-3">
+                                        <span class="badge bg-danger-soft text-danger px-3 py-2 rounded-pill">Secure Storage</span>
+                                        <span class="badge bg-danger-soft text-danger px-3 py-2 rounded-pill">Data Protection</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="feature-card border rounded-4 h-100 hover-lift">
+                                <div class="feature-card-body p-4">
+                                    <div class="feature-icon-container mb-3">
+                                        <div class="feature-icon bg-info-soft rounded-circle p-3 d-inline-flex">
+                                            <i class="fas fa-history text-info fa-2x"></i>
+                                        </div>
+                                    </div>
+                                    <h4 class="fw-bold">Transcription History</h4>
+                                    <p>Keep track of all your transcriptions in one place, with easy access to your complete history for future reference.</p>
+                                    <div class="mt-3">
+                                        <span class="badge bg-info-soft text-info px-3 py-2 rounded-pill">Search</span>
+                                        <span class="badge bg-info-soft text-info px-3 py-2 rounded-pill">Sort</span>
+                                        <span class="badge bg-info-soft text-info px-3 py-2 rounded-pill">Filter</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="feature-card border rounded-4 h-100 hover-lift">
+                                <div class="feature-card-body p-4">
+                                    <div class="feature-icon-container mb-3">
+                                        <div class="feature-icon bg-warning-soft rounded-circle p-3 d-inline-flex">
+                                            <i class="fas fa-tachometer-alt text-warning fa-2x"></i>
+                                        </div>
+                                    </div>
+                                    <h4 class="fw-bold">High Performance</h4>
+                                    <p>Our optimized processing pipeline ensures fast transcription even for longer audio files, saving you valuable time.</p>
+                                    <div class="mt-3">
+                                        <span class="badge bg-warning-soft text-warning px-3 py-2 rounded-pill">Fast Processing</span>
+                                        <span class="badge bg-warning-soft text-warning px-3 py-2 rounded-pill">Optimized</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="feature-card border rounded-4 h-100 hover-lift">
+                                <div class="feature-card-body p-4">
+                                    <div class="feature-icon-container mb-3">
+                                        <div class="feature-icon bg-dark-soft rounded-circle p-3 d-inline-flex">
+                                            <i class="fas fa-user-shield text-dark fa-2x"></i>
+                                        </div>
+                                    </div>
+                                    <h4 class="fw-bold">User Authentication</h4>
+                                    <p>Secure user authentication system ensures that only you have access to your sensitive audio transcriptions.</p>
+                                    <div class="mt-3">
+                                        <span class="badge bg-dark-soft text-dark px-3 py-2 rounded-pill">Flask-Login</span>
+                                        <span class="badge bg-dark-soft text-dark px-3 py-2 rounded-pill">SQLAlchemy</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% else %}
+<!-- GUEST VIEW (NOT LOGGED IN) -->
+<!-- Rest of the guest view code remains unchanged -->
+<div class="hero-section bg-gradient-blue-purple text-white py-5">
+    <div class="container">
+        <div class="row align-items-center py-5">
+            <div class="col-lg-6 mb-5 mb-lg-0">
+                <h1 class="display-3 fw-bold animate__animated animate__fadeInUp">Transform Voice to Text Instantly</h1>
+                <p class="lead mt-3 mb-4 animate__animated animate__fadeInUp animate__delay-1s">
+                    VoiceScribe uses advanced AI to convert your audio recordings into accurate text transcriptions.
+                </p>
+                <div class="d-flex flex-wrap gap-3 animate__animated animate__fadeInUp animate__delay-2s">
+                    <a href="{{ url_for('auth.register') }}" class="btn btn-light btn-lg px-4 py-3 fw-semibold shadow-sm">
+                        <i class="fas fa-user-plus me-2"></i> Sign Up Free
+                    </a>
+                    <a href="{{ url_for('auth.login') }}" class="btn btn-outline-light btn-lg px-4 py-3">
+                        <i class="fas fa-sign-in-alt me-2"></i> Login
+                    </a>
+                </div>
+                <div class="mt-4 animate__animated animate__fadeIn animate__delay-3s">
+                    <div class="d-flex align-items-center">
+                        <div class="ratings me-2">
+                            <i class="fas fa-star text-warning"></i>
+                            <i class="fas fa-star text-warning"></i>
+                            <i class="fas fa-star text-warning"></i>
+                            <i class="fas fa-star text-warning"></i>
+                            <i class="fas fa-star text-warning"></i>
+                        </div>
+                        <div class="reviews-count">
+                            <span class="text-light-50">Powered by Wav2Vec 2.0 Technology</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6 text-center animate__animated animate__fadeInRight">
+                <img src="{{ url_for('static', filename='images/hero-image.svg') }}" alt="Speech Recognition" class="img-fluid hero-image">
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- The rest of the guest view code remains unchanged -->
+{% endif %}
+{% endblock %}
+
+{% block head %}
+{{ super() }}
+<style>
+    /* Styles remain unchanged */
+    /* Gradients */
+    .bg-gradient-blue-purple {
+        background: linear-gradient(135deg, #4e73df 0%, #8a63d2 100%);
+    }
+    
+    .bg-gradient-tech {
+        background: linear-gradient(135deg, #0b4d9e 0%, #1976d2 100%);
+    }
+    
+    /* Soft background colors */
+    .bg-primary-soft {
+        background-color: rgba(78, 115, 223, 0.1);
+    }
+    
+    .bg-success-soft {
+        background-color: rgba(28, 200, 138, 0.1);
+    }
+    
+    .bg-info-soft {
+        background-color: rgba(54, 185, 204, 0.1);
+    }
+    
+    .bg-warning-soft {
+        background-color: rgba(246, 194, 62, 0.1);
+    }
+    
+    .bg-danger-soft {
+        background-color: rgba(231, 74, 59, 0.1);
+    }
+    
+    .bg-dark-soft {
+        background-color: rgba(90, 92, 105, 0.1);
+    }
+    
+    /* Animations */
+    .hover-lift {
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    
+    .hover-lift:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1) !important;
+    }
+    
+    .pulse-animation {
+        animation: pulse 2s infinite;
+    }
+    
+    @keyframes pulse {
+        0% {
+            transform: scale(1);
+        }
+        50% {
+            transform: scale(1.05);
+        }
+        100% {
+            transform: scale(1);
+        }
+    }
+    
+    /* Cards */
+    .rounded-4 {
+        border-radius: 1rem !important;
+    }
+    
+    /* Feature list styling */
+    .feature-list {
+        padding-left: 1.5rem;
+        margin-bottom: 0;
+    }
+    
+    .feature-list li {
+        margin-bottom: 0.75rem;
+        position: relative;
+    }
+    
+    .feature-list li:last-child {
+        margin-bottom: 0;
+    }
+    
+    .feature-list li::before {
+        content: "\f00c";
+        font-family: "Font Awesome 5 Free";
+        font-weight: 900;
+        position: absolute;
+        left: -1.5rem;
+        color: var(--primary-color);
+    }
+    
+    /* Feature cards */
+    .feature-card {
+        transition: all 0.3s ease;
+        overflow: hidden;
+    }
+    
+    .feature-card:hover {
+        border-color: var(--primary-color);
+    }
+    
+    .feature-card-body {
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+    }
+    
+    /* Feature icons */
+    .feature-icon {
+        height: 70px;
+        width: 70px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .fact-icon {
+        width: 50px;
+        height: 50px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    /* Tech badges */
+    .tech-badge {
+        transition: all 0.3s ease;
+    }
+    
+    .tech-badge:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1) !important;
+    }
+    
+    /* Responsive tweaks */
+    @media (max-width: 768px) {
+        .hero-image {
+            max-height: 300px;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Initialize tooltips
+        const tooltips = document.querySelectorAll('[data-bs-toggle="tooltip"]');
+        tooltips.forEach(tooltip => {
+            new bootstrap.Tooltip(tooltip);
+        });
+    });
+</script>
+{% endblock %}
